@@ -3,6 +3,7 @@ using System;
 
 //using System.Collections.Generic;
 using System.Linq;
+using System.Security.Cryptography.X509Certificates;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -137,6 +138,73 @@ namespace Queues
             while(!temp.IsEmpty())
             {
                 q.Insert(temp.Remove());
+            }
+        }
+
+        public static Queue<int> NewAsc(Queue<int> q)
+        {
+            Queue<int> newQ = new Queue<int>();
+            Queue<int> origin = Copy(q);
+
+            while (!origin.IsEmpty())
+            {
+                newQ.Insert(MinVal(origin));
+                Removemin(origin);
+            }
+            return newQ;
+        }
+
+        public static void EnterMidle<T>(Queue<T> q, T val)
+        {
+            int length = Count(q);//חישוב כמות האיברים
+            Queue<T> temp = new Queue<T>();//תור עזר
+            for (int i = length/2; i < length; i++)//רצים עד לאמצע התור ומעבירים חצי ממנו לתור העזר
+            {
+                temp.Insert(q.Remove());
+            }
+            temp.Insert(val);//הכנסה לאמצע בתור העזר
+            while (!q.IsEmpty())//מכניס את חצי השני של התור המקורי לסוף תור העזר
+            {
+                temp.Insert(q.Remove());
+            }
+            while (!temp.IsEmpty())//מחזיר את כל התור לתור המקורי
+            {
+                q.Insert(temp.Remove());
+            }
+        }
+
+        public static void NiceMerge<T>(Queue<T> Q1st, Queue<T> Q2st)
+        {
+            Queue<T> temp = new Queue<T>();
+            while(!Q1st.IsEmpty())
+            {
+                temp.Insert(Q1st.Remove());
+            }
+            if (!temp.IsEmpty())
+            {
+                while (!Q2st.IsEmpty()&&!temp.IsEmpty())
+                {
+                    Q1st.Insert(temp.Remove());
+                    Q1st.Insert(Q2st.Remove());
+                }
+            }
+            else
+            {
+                while (!Q2st.IsEmpty())
+                {
+                    Q1st.Insert(Q2st.Remove());
+                }
+            }
+            while (!temp.IsEmpty()|| !Q2st.IsEmpty())
+            {
+                if (!temp.IsEmpty())
+                {
+                    Q1st.Insert(temp.Remove());
+                }
+                if(!Q2st.IsEmpty())
+                {
+                    Q1st.Insert(Q2st.Remove());
+                }
             }
         }
 
